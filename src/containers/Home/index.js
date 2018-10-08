@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import '../../index.css';
-import Header from '../Header';
+import Header from '../../components/Header';
+import NavBar from '../../components/NavBar';
+import Filters from '../../components/Filters';
 import { initializeIcons } from '@uifabric/icons';
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
+import { connect } from 'react-redux';
+import * as MeetingActions from '../../store/actions/meetings';
 import {
   DetailsList,
   DetailsListLayoutMode,
@@ -13,9 +16,9 @@ import {
   IDetailsList
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
+
+
 initializeIcons();
-
-
 
 let columns = [
   {
@@ -108,6 +111,13 @@ let rows = [
   }
 ]
 
+
+@connect(
+  state => ({ meetings: state.meetings }),
+  { ...MeetingActions },
+)
+
+
 class Home extends Component {
   selection: Selection;
 
@@ -168,6 +178,9 @@ class Home extends Component {
 
   render() {
     const { selectionDetails, count } = this.state;
+    const { meetings,
+    } = this.props;
+    console.log(meetings)
     const self = this
     var detailsList = []
     if(typeof selectionDetails!='undefined'){
@@ -184,63 +197,15 @@ class Home extends Component {
         <div className="ms-Grid" dir="ltr">
 
             {/* HEADER START - SEND BUTTON, DATEPICKER, TIMER PICKER */}
-            <Header></Header>
+              <Header></Header>
             {/* HEADER END - SEND BUTTON, DATEPICKER, TIMER PICKER */}
 
-            {/* TABS SECTION START */}
-            <div className="ms-Grid-row background-blue">
-              <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab padding-20">
-                List View
-              </div>
-              <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 padding-20 color-white">
-                Schedule View
-              </div>
-              <div className="ms-Grid-col ms-sm5 ms-md5 ms-lg5 padding-20 color-white">
-                Additional Information
-              </div>
-              <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 padding-20 color-white text-right">
-                Selected Locations ({count})
-              </div>
-            </div>
-            {/* TABS SECTION END */}
-
+            {/* NAVBAR SECTION START */}
+              <NavBar></NavBar>
+            {/* NAVBAR SECTION END */}
 
             {/* FILTERS SECTION START */}
-            <div className="ms-Grid-row height-100">
-              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filter-section">
-
-                <div className="ms-Grid-row">
-                  <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 selectedTab top-btns location margin-bottom-20">
-                    <DefaultButton>
-                      <i className="ms-Icon ms-Icon--Filter padding-right-5 location-icon" aria-hidden="true"></i> 
-                      Location Filter
-                    </DefaultButton>
-                  </div>
-
-                  <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab top-btns clearall margin-bottom-20">
-                    <DefaultButton onClick={self.clearAll.bind(this,'h')}>
-                      <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 close-icon" aria-hidden="true"></i> 
-                      Clear All
-                    </DefaultButton>
-                  </div>
-
-                  <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab top-btns capacity margin-bottom-20">
-                    <DefaultButton>
-                      Capacity <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-5 close-icon" aria-hidden="true"></i> 
-                      {count}
-                    </DefaultButton>
-                  </div>
-
-                  <div className="ms-Grid-cols selectedTab margin-bottom-10 locationBtn background-white">
-                    <DefaultButton>
-                      Location {detailsList}
-                    </DefaultButton>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
+              <Filters></Filters>
             {/* FILTERS SECTION END */}
 
             {/* LIST VIEW START */}
