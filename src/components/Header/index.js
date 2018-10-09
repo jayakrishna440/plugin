@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { DatePicker } from 'office-ui-fabric-react/lib/DatePicker';
-import { Dropdown, IDropdown, DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
 
 import { connect } from 'react-redux';
 import * as MeetingActions from '../../store/actions/meetings';
@@ -24,12 +24,12 @@ class Header extends Component {
   };
   meetingTypeSelected = (option): string=> {
     console.log(option.key)
-  }
+  };
 
   render() {
-    const { meetings,
-    } = this.props;
+    const { meetings } = this.props;
     console.log(meetings)
+    console.log(meetings.meetingDate)
     return (
         <div className="ms-Grid-row header-section">
           <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2 background-white">
@@ -37,7 +37,7 @@ class Header extends Component {
           </div>
           <div className="ms-Grid-col ms-sm12 ms-md4 ms-lg4">
             <Dropdown
-              onChange={this.meetingTypeSelected}
+              onChanged={this.meetingTypeSelected}
               defaultSelectedKey={'A'}
               options={[
                 { key: 'A', text: 'Book a Meeting Room (*) ' },
@@ -57,10 +57,10 @@ class Header extends Component {
             />
           </div>
           <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2">
-              <TimePicker/>
+              <TimePicker type={'start'} />
           </div>
           <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2">
-              <TimePicker/>
+              <TimePicker type={'end'} />
           </div>
         </div>
     );

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import '../../index.css';
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
-import Filters from '../../components/Filters';
 import { initializeIcons } from '@uifabric/icons';
-
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { connect } from 'react-redux';
 import * as MeetingActions from '../../store/actions/meetings';
 import {
@@ -125,7 +124,11 @@ class Home extends Component {
     super();
     
     this.selection = new Selection({
-      onSelectionChanged: () => this.setState({ selectionDetails: this.getSelectionDetails(), count: this.getSelectionCount() })
+      onSelectionChanged: () => {
+        this.setState({ selectionDetails: this.getSelectionDetails(), count: this.getSelectionCount() })
+        const {setSelectedLocations, setLocationsCount} = this.props;
+        setSelectedLocations(this.getSelectionDetails(), this.getSelectionCount());
+      }
     });
 
     this.state = {
@@ -162,6 +165,8 @@ class Home extends Component {
       }
     }
     this.setState({ selectionDetails: selectionDetails, count: count-1 })
+    const {setSelectedLocations, setLocationsCount} = this.props;
+    setSelectedLocations(selectionDetails,count-1);
   }
 
   clearAll(e):any {
@@ -170,6 +175,8 @@ class Home extends Component {
         this.selection.setKeySelected(selectionDetails[i].key,false,false);
     }
     this.setState({ selectionDetails: [], count: 0 })
+    const {setSelectedLocations, setLocationsCount} = this.props;
+    setSelectedLocations([],0);
   }
 
   _onFormatDate = (date: Date): string => {
@@ -178,8 +185,7 @@ class Home extends Component {
 
   render() {
     const { selectionDetails, count } = this.state;
-    const { meetings,
-    } = this.props;
+    const { meetings} = this.props;
     console.log(meetings)
     const self = this
     var detailsList = []
@@ -193,7 +199,7 @@ class Home extends Component {
     }
 
     return (
-      
+       
         <div className="ms-Grid" dir="ltr">
 
             {/* HEADER START - SEND BUTTON, DATEPICKER, TIMER PICKER */}
@@ -201,11 +207,45 @@ class Home extends Component {
             {/* HEADER END - SEND BUTTON, DATEPICKER, TIMER PICKER */}
 
             {/* NAVBAR SECTION START */}
-              <NavBar></NavBar>
+              <NavBar type={'list'}></NavBar>
             {/* NAVBAR SECTION END */}
 
             {/* FILTERS SECTION START */}
-              <Filters></Filters>
+            <div className="ms-Grid-row height-100">
+              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filter-section">
+
+                <div className="ms-Grid-row">
+                  <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 selectedTab top-btns location margin-bottom-20">
+                    <DefaultButton>
+                      <i className="ms-Icon ms-Icon--Filter padding-right-5 location-icon" aria-hidden="true"></i> 
+                      Location Filter
+                    </DefaultButton>
+                  </div>
+
+                  <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab top-btns clearall margin-bottom-20">
+                    <DefaultButton onClick={self.clearAll.bind(this,'h')}>
+                      <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 close-icon" aria-hidden="true"></i> 
+                      Clear All
+                    </DefaultButton>
+                  </div>
+
+                  <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab top-btns capacity margin-bottom-20">
+                    <DefaultButton>
+                      Capacity <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-5 close-icon" aria-hidden="true"></i> 
+                      {count}
+                    </DefaultButton>
+                  </div>
+
+                  <div className="ms-Grid-cols selectedTab margin-bottom-10 locationBtn background-white">
+                    <DefaultButton>
+                      Location {detailsList}
+                    </DefaultButton>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
             {/* FILTERS SECTION END */}
 
             {/* LIST VIEW START */}
