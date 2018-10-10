@@ -9,7 +9,7 @@ module.exports = {
     },
     module: {
         rules: [
-            {
+            /*{
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 loader: "eslint-loader",
@@ -18,7 +18,7 @@ module.exports = {
                     formatter: require('eslint-friendly-formatter'),
                     emitWarning: true
                 }
-            },
+            },*/
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
