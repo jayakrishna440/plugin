@@ -6,8 +6,6 @@ import { initializeIcons } from '@uifabric/icons';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { connect } from 'react-redux';
 import * as MeetingActions from '../../store/actions/meetings';
-import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import {
   DetailsList,
   DetailsListLayoutMode,
@@ -73,30 +71,11 @@ let rows = [
   {
     key: 'locationid',
     locationid: '12345',
-    location: '5001 A',
+    location: '5003 A',
     floor: '6th floor',
-    building: 'Denver office A',
+    building: 'Denver office A (*)',
     location_type: 'Conference Room (Test)',
     capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid7',
-    locationid: '12345666',
-    location: '5002 A',
-    floor: '1th floor',
-    building: 'Denver office A',
-    location_type: 'Small Room (Test)',
-    capacity: '1-4',
-    like: ''
-  },{
-    key: 'locationid8',
-    locationid: '1234577',
-    location: '5003 A',
-    floor: '4th floor',
-    building: 'Denver office A',
-    location_type: 'Meeting Room (Test)',
-    capacity: '1-23',
     like: ''
   },
   {
@@ -104,7 +83,7 @@ let rows = [
     locationid: '123453',
     location: '5003 B',
     floor: '6th floor',
-    building: 'Denver office B',
+    building: 'Denver office B (*)',
     location_type: 'Conference Room (Test)',
     capacity: '1-44',
     like: ''
@@ -114,7 +93,7 @@ let rows = [
     locationid: '123454',
     location: '5003 C',
     floor: '6th floor',
-    building: 'Denver office C',
+    building: 'Denver office C (*)',
     location_type: 'Conference Room (Test)',
     capacity: '1-44',
     like: ''
@@ -124,18 +103,13 @@ let rows = [
     locationid: '123455',
     location: '5003 D',
     floor: '6th floor',
-    building: 'Denver office D',
+    building: 'Denver office D (*)',
     location_type: 'Conference Room (Test)',
     capacity: '1-44',
     like: ''
   }
 ]
 
-var selectedA = false;
-var selectedB = false;
-var selectedC = false;
-var selectedD = false;
-var filterClicked = false;
 
 @connect(
   state => ({ meetings: state.meetings }),
@@ -148,12 +122,7 @@ class Home extends Component {
 
   constructor() {
     super();
-    this._onCheckboxChangeA = this._onCheckboxChangeA.bind(this);
-    this._onCheckboxChangeB = this._onCheckboxChangeB.bind(this);
-    this._onCheckboxChangeC = this._onCheckboxChangeC.bind(this);
-    this._onCheckboxChangeD = this._onCheckboxChangeD.bind(this);
     
-
     this.selection = new Selection({
       onSelectionChanged: () => {
         this.setState({ selectionDetails: this.getSelectionDetails(), count: this.getSelectionCount() })
@@ -163,8 +132,7 @@ class Home extends Component {
     });
 
     this.state = {
-      items: rows,
-      filter:false,
+      rows: null,
       isLoading: false,
       count: this.getSelectionCount(), 
       selectionDetails: this.getSelectionDetails()
@@ -172,7 +140,6 @@ class Home extends Component {
 
     this.removeLocation = this.removeLocation.bind(this);
     this.clearAll = this.clearAll.bind(this);
-    this.filter = this.filter.bind(this);
   }
 
   getSelectionCount(): any {
@@ -192,6 +159,7 @@ class Home extends Component {
     for (var i = 0; i < selectionDetails.length; i++) {
       if(selectionDetails[i].locationid == e.locationid) {
         this.selection.setKeySelected(selectionDetails[i].key,false,false);
+
         selectionDetails.splice(i,1)
         break;
       }
@@ -211,78 +179,12 @@ class Home extends Component {
     setSelectedLocations([],0);
   }
 
-  filter(e):any {
-    filterClicked = !filterClicked;
-    this.setState({filter:filterClicked})
-  }
-
   _onFormatDate = (date: Date): string => {
     return date.getDate() + '/' + (date.getMonth() + 1) + '/' + (date.getFullYear());
   };
 
-  _onChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-    this.setState({ items: text ? rows.filter(i => i.building.toLowerCase().indexOf(text) > -1) : rows });
-  };
-
-  filterData(): void {
-    var arr = []
-    if(selectedA) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office a') > -1))
-    }
-    if(selectedB) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office b') > -1))
-    }
-    if(selectedC) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office c') > -1))
-    }
-    if(selectedD) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office d') > -1))
-    }
-    if(!selectedA && !selectedB && ! selectedC && !selectedD) {
-      this.setState({ items: rows});
-    }else {
-      console.log('ff')
-      this.setState({ items: arr});
-    }
-  }
- 
-  _onCheckboxChangeA(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedA = true
-    }else{
-      selectedA = false
-    }
-    this.filterData()
-  }
-
-  _onCheckboxChangeB(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedB = true
-    }else{
-      selectedB = false
-    }
-    this.filterData()
-  }
-  _onCheckboxChangeC(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedC = true
-    }else{
-      selectedC = false
-    }
-    this.filterData()
-  }
-  _onCheckboxChangeD(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedD = true
-    }else{
-      selectedD = false
-    }
-    this.filterData()
-  }
-  
-
   render() {
-    const { selectionDetails, count,items } = this.state;
+    const { selectionDetails, count } = this.state;
     const { meetings} = this.props;
     console.log(meetings)
     const self = this
@@ -291,19 +193,11 @@ class Home extends Component {
       detailsList = selectionDetails.map(function(name){
         return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)}>
               <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-10 close-icon" aria-hidden="true"></i> 
-              {name.location}-{name.building}-{name.floor}
+              {name.building}
           </div>;
       })
     }
-    let filterChecks;
-    let filterTextField;
-    if (filterClicked) {
-      filterChecks = <div> <div className='float-left'> <Checkbox label="Denver Office A" onChange={this._onCheckboxChangeA} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'> <Checkbox label="Denver Office B" onChange={this._onCheckboxChangeB} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'> <Checkbox label="Denver Office C" onChange={this._onCheckboxChangeC} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'><Checkbox label="Denver Office D" onChange={this._onCheckboxChangeD} ariaDescribedBy={'descriptionID'} /></div></div>;
-      // filterTextField = <TextField label="Filter by building:" onChange={this._onChange} />
-    } else {
-      filterChecks = <div></div>
-      filterTextField = <div></div>
-    }
+
     return (
        
         <div className="ms-Grid" dir="ltr">
@@ -321,17 +215,20 @@ class Home extends Component {
               <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filter-section">
 
                 <div className="ms-Grid-row">
-                  <div className="ms-Grid-col selectedTab top-btns location margin-bottom-20">
-                    <DefaultButton iconProps={{ iconName: 'Filter' }} onClick={self.filter.bind(this)}>
-                       Location Filter
+                  <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 selectedTab top-btns location margin-bottom-20">
+                    <DefaultButton>
+                      <i className="ms-Icon ms-Icon--Filter padding-right-5 location-icon" aria-hidden="true"></i> 
+                      Location Filter
                     </DefaultButton>
                   </div>
 
-                  <div className="ms-Grid-col selectedTab top-btns clearall margin-bottom-20">
-                    <DefaultButton onClick={self.clearAll.bind(this,'h')}  iconProps={{ iconName: 'ChromeClose' }}>
+                  <div className="ms-Grid-col ms-sm2 ms-md2 ms-lg2 selectedTab top-btns clearall margin-bottom-20">
+                    <DefaultButton onClick={self.clearAll.bind(this,'h')}>
+                      <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 close-icon" aria-hidden="true"></i> 
                       Clear All
                     </DefaultButton>
                   </div>
+                  
                   <div className="ms-Grid-cols selectedTab margin-bottom-10 locationBtn background-white">
                     <DefaultButton>
                       Location {detailsList}
@@ -346,24 +243,18 @@ class Home extends Component {
 
             {/* LIST VIEW START */}
             <div className="ms-Grid-row">
-              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 home-list-section">
-              {filterChecks}
-              <div style={{clear:'both'}}>
-                {filterTextField}
+              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">
                 <MarqueeSelection selection={this._selection}>
                   <DetailsList
-                    selectionPreservedOnEmptyClick={true}
                     checkboxVisibility = {CheckboxVisibility.always}
-                    items={items}
+                    items={rows}
                     columns={columns}
                     selection={this.selection}
                   />
                 </MarqueeSelection>
               </div>
-              </div>
             </div>
             {/* LIST VIEW END */}
-
         </div>
 
       

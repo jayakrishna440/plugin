@@ -16,7 +16,8 @@ export default function (state = {selected_locations:[],locations_count:0,meetin
       return {
         ...state,
         meetingDate: action.date,
-        startTime: '7:00 AM'
+        startTime: '7:00 AM',
+        endTime: '7:15 AM'
       }
     case SET_MEETING_TYPE:
       return {

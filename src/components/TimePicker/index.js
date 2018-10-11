@@ -193,7 +193,7 @@ export class TimePicker extends Component {
           }
         }
       }
-      if(type == 'end' && meetings.endTime == '') {
+      if(type == 'end') {
         if(meetings.startTime !== '') {
           i = 0;
           for(;i< length;i++) {
@@ -216,9 +216,7 @@ export class TimePicker extends Component {
             time = times[i+1].key;
           }
         }
-       // endTime = time;
-      }else if(type == 'end'){
-        time = meetings.endTime
+        endTime = time;
       }
     } else {
       var i = 0 ;
@@ -231,7 +229,7 @@ export class TimePicker extends Component {
       if(meetings.startTime !== '') {
         time = meetings.startTime;
       }
-      if(type == 'end' && meetings.endTime == '') {
+      if(type == 'end') {
         if(meetings.startTime !== '') {
           i = 0;
           for(;i< length;i++) {
@@ -254,9 +252,7 @@ export class TimePicker extends Component {
             time = times[i+1].key;
           }
         }
-        //endTime = time;
-      }else if(type == 'end'){
-        time = meetings.endTime
+        endTime = time;
       }
     }
     return (

@@ -32,10 +32,10 @@ class Header extends Component {
     console.log(meetings.meetingDate)
     return (
         <div className="ms-Grid-row header-section">
-          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2 background-white">
+          <div className="ms-Grid-col background-white">
               <DefaultButton iconProps={{ iconName: 'Mail' }}>SEND</DefaultButton>
           </div>
-          <div className="ms-Grid-col ms-sm12 ms-md4 ms-lg4">
+          <div className="ms-Grid-col">
             <Dropdown
               onChanged={this.meetingTypeSelected}
               defaultSelectedKey={'A'}

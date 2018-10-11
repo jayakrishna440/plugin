@@ -12,12 +12,12 @@ let attendiesData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     movable: false,
     creatable: false,
     resourceName: "ATTENDIES",
-    minuteStep: 15,
+    minuteStep: 30,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
     eventItemLineHeight: 40,
-    schedulerWidth: '1400'
+    schedulerWidth: '1200'
 });
 
 let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Day,false, false, {
@@ -25,14 +25,13 @@ let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     endResizable: false,
     movable: false,
     creatable: false,
-    resourceName: "Rooms",
-    minuteStep: 15,
+    resourceName: "EMS HQ",
+    minuteStep: 30,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
     eventItemLineHeight: 40,
-    schedulerWidth: '1400',
-    // schedulerHeight:'1000'
+    schedulerWidth: '1200'
 });
 let attendiesresources = [
     {
@@ -68,7 +67,7 @@ schedulerData.setResources(resources);
 let events = [
 {
      id: 1,
-     start: '2018-10-09 08:30:00',
+     start: '2018-10-09 09:30:00',
      end: '2018-10-09 10:30:00',
      resourceId: 'r1',
      title: 'I am finished',
