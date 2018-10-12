@@ -6,6 +6,7 @@ import 'react-big-scheduler/lib/css/style.css'
 import moment from 'moment';
 import withDragDropContext from './withDnDContext';
 
+import Filters from '../../components/Filters';
 let attendiesData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Day,false, false, {
     startResizable: false,
     endResizable: false,
@@ -184,7 +185,7 @@ class ScheduleView extends Component {
                 {/* NAVBAR SECTION START */}
                 <NavBar type={'schedule'}></NavBar>
                 {/* NAVBAR SECTION END */}
-
+                <Filters></Filters>
                 {/* LIST VIEW START */}
                 <div className="ms-Grid-row">
                     <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">

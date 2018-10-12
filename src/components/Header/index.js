@@ -28,8 +28,6 @@ class Header extends Component {
 
   render() {
     const { meetings } = this.props;
-    console.log(meetings)
-    console.log(meetings.meetingDate)
     return (
         <div className="ms-Grid-row header-section">
           <div className="ms-Grid-col background-white">

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../index.css';
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
+import Filters from '../../components/Filters';
 import { initializeIcons } from '@uifabric/icons';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { connect } from 'react-redux';
@@ -131,12 +132,6 @@ let rows = [
   }
 ]
 
-var selectedA = false;
-var selectedB = false;
-var selectedC = false;
-var selectedD = false;
-var filterClicked = false;
-
 @connect(
   state => ({ meetings: state.meetings }),
   { ...MeetingActions },
@@ -146,33 +141,21 @@ var filterClicked = false;
 class Home extends Component {
   selection: Selection;
 
-  constructor() {
-    super();
-    this._onCheckboxChangeA = this._onCheckboxChangeA.bind(this);
-    this._onCheckboxChangeB = this._onCheckboxChangeB.bind(this);
-    this._onCheckboxChangeC = this._onCheckboxChangeC.bind(this);
-    this._onCheckboxChangeD = this._onCheckboxChangeD.bind(this);
-    
-
+  constructor(props) {
+    super(props);
     this.selection = new Selection({
       onSelectionChanged: () => {
-        this.setState({ selectionDetails: this.getSelectionDetails(), count: this.getSelectionCount() })
-        const {setSelectedLocations, setLocationsCount} = this.props;
+        const {setSelectedLocations} = this.props;
         setSelectedLocations(this.getSelectionDetails(), this.getSelectionCount());
       }
     });
+    const {setSelection} = this.props;
+    setSelection(this.selection);
 
     this.state = {
       items: rows,
-      filter:false,
-      isLoading: false,
-      count: this.getSelectionCount(), 
-      selectionDetails: this.getSelectionDetails()
+      isLoading: false
     };
-
-    this.removeLocation = this.removeLocation.bind(this);
-    this.clearAll = this.clearAll.bind(this);
-    this.filter = this.filter.bind(this);
   }
 
   getSelectionCount(): any {
@@ -183,127 +166,18 @@ class Home extends Component {
     return this.selection.getSelection()
   }
 
-  onChange(value): any {
-    console.log(value && value.format(format));
-  }
-
-  removeLocation(e): any {
-    const { selectionDetails, count } = this.state;
-    for (var i = 0; i < selectionDetails.length; i++) {
-      if(selectionDetails[i].locationid == e.locationid) {
-        this.selection.setKeySelected(selectionDetails[i].key,false,false);
-        selectionDetails.splice(i,1)
-        break;
+  componentDidMount() {
+    var self = this;
+    self.timeout = setTimeout(() => {
+      const { meetings } = self.props;
+      for (var i = 0; i < meetings.selected_locations.length; i++) {
+        self.selection.setKeySelected(meetings.selected_locations[i].key,true,false);
       }
-    }
-    this.setState({ selectionDetails: selectionDetails, count: count-1 })
-    const {setSelectedLocations, setLocationsCount} = this.props;
-    setSelectedLocations(selectionDetails,count-1);
+    }, 500);
   }
-
-  clearAll(e):any {
-    const { selectionDetails, count } = this.state;
-    for (var i = 0; i < selectionDetails.length; i++) {
-        this.selection.setKeySelected(selectionDetails[i].key,false,false);
-    }
-    this.setState({ selectionDetails: [], count: 0 })
-    const {setSelectedLocations, setLocationsCount} = this.props;
-    setSelectedLocations([],0);
-  }
-
-  filter(e):any {
-    filterClicked = !filterClicked;
-    this.setState({filter:filterClicked})
-  }
-
-  _onFormatDate = (date: Date): string => {
-    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + (date.getFullYear());
-  };
-
-  _onChange = (ev: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text: string): void => {
-    this.setState({ items: text ? rows.filter(i => i.building.toLowerCase().indexOf(text) > -1) : rows });
-  };
-
-  filterData(): void {
-    var arr = []
-    if(selectedA) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office a') > -1))
-    }
-    if(selectedB) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office b') > -1))
-    }
-    if(selectedC) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office c') > -1))
-    }
-    if(selectedD) {
-      arr = arr.concat(rows.filter(i => i.building.toLowerCase().indexOf('denver office d') > -1))
-    }
-    if(!selectedA && !selectedB && ! selectedC && !selectedD) {
-      this.setState({ items: rows});
-    }else {
-      console.log('ff')
-      this.setState({ items: arr});
-    }
-  }
- 
-  _onCheckboxChangeA(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedA = true
-    }else{
-      selectedA = false
-    }
-    this.filterData()
-  }
-
-  _onCheckboxChangeB(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedB = true
-    }else{
-      selectedB = false
-    }
-    this.filterData()
-  }
-  _onCheckboxChangeC(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedC = true
-    }else{
-      selectedC = false
-    }
-    this.filterData()
-  }
-  _onCheckboxChangeD(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
-    if(isChecked) {
-      selectedD = true
-    }else{
-      selectedD = false
-    }
-    this.filterData()
-  }
-  
 
   render() {
-    const { selectionDetails, count,items } = this.state;
-    const { meetings} = this.props;
-    console.log(meetings)
-    const self = this
-    var detailsList = []
-    if(typeof selectionDetails!='undefined'){
-      detailsList = selectionDetails.map(function(name){
-        return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)}>
-              <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-10 close-icon" aria-hidden="true"></i> 
-              {name.location}-{name.building}-{name.floor}
-          </div>;
-      })
-    }
-    let filterChecks;
-    let filterTextField;
-    if (filterClicked) {
-      filterChecks = <div> <div className='float-left'> <Checkbox label="Denver Office A" onChange={this._onCheckboxChangeA} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'> <Checkbox label="Denver Office B" onChange={this._onCheckboxChangeB} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'> <Checkbox label="Denver Office C" onChange={this._onCheckboxChangeC} ariaDescribedBy={'descriptionID'} /></div><div className='float-left'><Checkbox label="Denver Office D" onChange={this._onCheckboxChangeD} ariaDescribedBy={'descriptionID'} /></div></div>;
-      // filterTextField = <TextField label="Filter by building:" onChange={this._onChange} />
-    } else {
-      filterChecks = <div></div>
-      filterTextField = <div></div>
-    }
+    const { items } = this.state;
     return (
        
         <div className="ms-Grid" dir="ltr">
@@ -317,49 +191,23 @@ class Home extends Component {
             {/* NAVBAR SECTION END */}
 
             {/* FILTERS SECTION START */}
-            <div className="ms-Grid-row height-100">
-              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filter-section">
-
-                <div className="ms-Grid-row">
-                  <div className="ms-Grid-col selectedTab top-btns location margin-bottom-20">
-                    <DefaultButton iconProps={{ iconName: 'Filter' }} onClick={self.filter.bind(this)}>
-                       Location Filter
-                    </DefaultButton>
-                  </div>
-
-                  <div className="ms-Grid-col selectedTab top-btns clearall margin-bottom-20">
-                    <DefaultButton onClick={self.clearAll.bind(this,'h')}  iconProps={{ iconName: 'ChromeClose' }}>
-                      Clear All
-                    </DefaultButton>
-                  </div>
-                  <div className="ms-Grid-cols selectedTab margin-bottom-10 locationBtn background-white">
-                    <DefaultButton>
-                      Location {detailsList}
-                    </DefaultButton>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
+            <Filters></Filters>
             {/* FILTERS SECTION END */}
 
             {/* LIST VIEW START */}
             <div className="ms-Grid-row">
               <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 home-list-section">
-              {filterChecks}
-              <div style={{clear:'both'}}>
-                {filterTextField}
-                <MarqueeSelection selection={this._selection}>
-                  <DetailsList
-                    selectionPreservedOnEmptyClick={true}
-                    checkboxVisibility = {CheckboxVisibility.always}
-                    items={items}
-                    columns={columns}
-                    selection={this.selection}
-                  />
-                </MarqueeSelection>
-              </div>
+                <div style={{clear:'both'}}>
+                  <MarqueeSelection selection={this.selection}>
+                    <DetailsList
+                      selectionPreservedOnEmptyClick={true}
+                      checkboxVisibility = {CheckboxVisibility.always}
+                      items={items}
+                      columns={columns}
+                      selection={this.selection}
+                    />
+                  </MarqueeSelection>
+                </div>
               </div>
             </div>
             {/* LIST VIEW END */}
