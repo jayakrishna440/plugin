@@ -1,0 +1,117 @@
+[
+  {
+    "locationid": "5bc4a1a723b0577682641f96",
+    "building_name": "EMEA-UK-1 John St",
+    "rooms": [
+      {
+        "room_type": "Reservable Office",
+        "capacity": 27
+      },
+      {
+        "room_type": "Reservable Office",
+        "capacity": 27
+      }
+    ],
+    "features": [
+      "Height Adjustable Desk",
+      "Computer-Monitor"
+    ],
+    "floors": [
+      "04",
+      "06",
+      "05"
+    ]
+  },
+  {
+    "locationid": "5bc4a1a79a7afb5cacaed96f",
+    "building_name": "CA-Toronto-Ontanto-Anta III",
+    "rooms": [
+      {
+        "room_type": "Office/Huddle",
+        "capacity": 36
+      },
+      {
+        "room_type": "Reservable Cubicle",
+        "capacity": 19
+      }
+    ],
+    "features": [
+      "Height Adjustable Desk",
+      "Computer-Keyboard"
+    ],
+    "floors": [
+      "10",
+      "02",
+      "05"
+    ]
+  },
+  {
+    "locationid": "5bc4a1a73cb4fbfa2b97f6c3",
+    "building_name": "EMEA-UK-1 John St",
+    "rooms": [
+      {
+        "room_type": "Reservable Office",
+        "capacity": 34
+      },
+      {
+        "room_type": "Office/Huddle",
+        "capacity": 38
+      }
+    ],
+    "features": [
+      "Height Adjustable Desk",
+      "Glass Board"
+    ],
+    "floors": [
+      "01",
+      "UG",
+      "10"
+    ]
+  },
+  {
+    "locationid": "5bc4a1a7b96aea4868d7d828",
+    "building_name": "EMEA-IT-Da Vinci",
+    "rooms": [
+      {
+        "room_type": "Office/Huddle",
+        "capacity": 35
+      },
+      {
+        "room_type": "Reservable Office",
+        "capacity": 4
+      }
+    ],
+    "features": [
+      "Glass Board",
+      "Computer-Monitor"
+    ],
+    "floors": [
+      "07",
+      "06",
+      "07"
+    ]
+  },
+  {
+    "locationid": "5bc4a1a7b227ded86911ea81",
+    "building_name": "JAPA-IN",
+    "rooms": [
+      {
+        "room_type": "Reservable Office",
+        "capacity": 31
+      },
+      {
+        "room_type": "Office/Huddle",
+        "capacity": 24
+      }
+    ],
+    "features": [
+      "Computer-Keyboard",
+      "Glass Board"
+    ],
+    "floors": [
+      "09",
+      "Lower Ground",
+      "08"
+    ]
+  }
+]

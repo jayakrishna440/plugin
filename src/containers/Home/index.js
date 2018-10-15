@@ -18,7 +18,8 @@ import {
   IDetailsList
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
-
+var data = require('../../assets/locations.json');
+console.log(data)
 
 initializeIcons();
 
@@ -136,7 +137,6 @@ let rows = [
   state => ({ meetings: state.meetings }),
   { ...MeetingActions },
 )
-
 
 class Home extends Component {
   selection: Selection;

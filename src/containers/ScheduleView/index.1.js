@@ -28,17 +28,11 @@ let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     creatable: false,
     resourceName: "EMS HQ",
     minuteStep: 30,
-    displayWeekend: false,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
     eventItemLineHeight: 40,
-    schedulerWidth: '1200',
-    views: [
-        {viewName: 'Day', viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false},
-        {viewName: 'Month', viewType: ViewTypes.Month, showAgenda: false, isEventPerspective: false},
-        {viewName: 'Year', viewType: ViewTypes.Year, showAgenda: false, isEventPerspective: false},
-      ]
+    schedulerWidth: '1200'
 });
 let attendiesresources = [
     {
@@ -134,11 +128,11 @@ class ScheduleView extends Component {
     }
 
     onViewChange = (schedulerData, view) => {
-        schedulerData.setViewType(view.viewType, view.showAgenda, view.isEventPerspective);
-        schedulerData.setEvents(events);
+        /*schedulerData.setViewType(view.viewType, view.showAgenda, view.isEventPerspective);
+        schedulerData.setEvents(DemoData.events);
         this.setState({
             viewModel: schedulerData
-        })
+        })*/
     }
 
     onSelectDate = (schedulerData, date) => {
@@ -181,66 +175,13 @@ class ScheduleView extends Component {
     eventClicked = (schedulerData, event) => {
         alert(`You just clicked an event: {id: ${event.id}, title: ${event.title}}`);
     };
-    updateEventStart = (schedulerData, event, newStart) => {
-        if(confirm(`Do you want to adjust the start of the event? {eventId: ${event.id}, eventTitle: ${event.title}, newStart: ${newStart}}`)) {
-            schedulerData.updateEventStart(event, newStart);
-        }
-        this.setState({
-            viewModel: schedulerData
-        })
-    }
-
-    updateEventEnd = (schedulerData, event, newEnd) => {
-        if(confirm(`Do you want to adjust the end of the event? {eventId: ${event.id}, eventTitle: ${event.title}, newEnd: ${newEnd}}`)) {
-            schedulerData.updateEventEnd(event, newEnd);
-        }
-        this.setState({
-            viewModel: schedulerData
-        })
-    }
-
-    moveEvent = (schedulerData, event, slotId, slotName, start, end) => {
-        if(confirm(`Do you want to move the event? {eventId: ${event.id}, eventTitle: ${event.title}, newSlotId: ${slotId}, newSlotName: ${slotName}, newStart: ${start}, newEnd: ${end}`)) {
-            schedulerData.moveEvent(event, slotId, slotName, start, end);
-            this.setState({
-                viewModel: schedulerData
-            })
-        }
-    }
-
-    onScrollRight = (schedulerData, schedulerContent, maxScrollLeft) => {
-      schedulerData.next();
-      schedulerData.setEvents(events);
-      this.setState({
-          viewModel: schedulerData
-      });
-
-      schedulerContent.scrollLeft = maxScrollLeft - 10;
-    }
-
-    onScrollLeft = (schedulerData, schedulerContent, maxScrollLeft) => {
-      schedulerData.prev();
-      schedulerData.setEvents(events);
-      this.setState({
-          viewModel: schedulerData
-      });
-
-      schedulerContent.scrollLeft = 10;
-    }
-
-    onScrollTop = (schedulerData, schedulerContent, maxScrollTop) => {
-        console.log('onScrollTop');
-    }
-
-    onScrollBottom = (schedulerData, schedulerContent, maxScrollTop) => {
-        console.log('onScrollBottom');
-    }
     render() {
         return (
             <div className="ms-Grid" dir="ltr">
                 {/* HEADER START - SEND BUTTON, DATEPICKER, TIMER PICKER */}
                 <Header></Header>
                 {/* HEADER END - SEND BUTTON, DATEPICKER, TIMER PICKER */}
+
                 {/* NAVBAR SECTION START */}
                 <NavBar type={'schedule'}></NavBar>
                 {/* NAVBAR SECTION END */}
@@ -248,19 +189,20 @@ class ScheduleView extends Component {
                 {/* LIST VIEW START */}
                 <div className="ms-Grid-row">
                     <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">
+                        <Scheduler schedulerData={attendiesData} 
+                        prevClick={this.prevClick}
+                                nextClick={this.nextClick}
+                                onSelectDate={this.onSelectDate}
+                                onViewChange={this.onViewChange}
+                        nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
+                    </div>
+                    <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">
                         <Scheduler schedulerData={schedulerData} 
                         prevClick={this.prevClick}
                                 nextClick={this.nextClick}
                                 onSelectDate={this.onSelectDate}
                                 onViewChange={this.onViewChange}
-                                updateEventStart={this.updateEventStart}
-                                updateEventEnd={this.updateEventEnd}
-                                moveEvent={this.moveEvent}
-                                nScrollLeft={this.onScrollLeft}
-                                onScrollRight={this.onScrollRight}
-                                onScrollTop={this.onScrollTop}
-                                onScrollBottom={this.onScrollBottom}
-                                nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
+                        nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
                     </div>
                 </div>
                 {/* LIST VIEW END */}

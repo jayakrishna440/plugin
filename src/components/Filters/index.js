@@ -4,14 +4,11 @@ import * as MeetingActions from '../../store/actions/meetings';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Modal } from 'office-ui-fabric-react/lib/Modal';
 import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
-import { TextField, MaskedTextField } from 'office-ui-fabric-react/lib/TextField';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import {
   DetailsList,
-  DetailsListLayoutMode,
   CheckboxVisibility,
-  Selection,
-  IColumn,
-  IDetailsList
+  Selection
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
 
