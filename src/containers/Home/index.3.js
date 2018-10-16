@@ -18,6 +18,8 @@ import {
   IDetailsList
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
+var data = require('../../assets/locations.json');
+console.log(data)
 
 initializeIcons();
 
@@ -44,9 +46,9 @@ let columns = [
     maxWidth: 140,
   },
   {
-    key: 'room_type',
+    key: 'location_type',
     name: 'Location Type',
-    fieldName: 'room_type',
+    fieldName: 'location_type',
     minWidth: 200,
     maxWidth: 200,
   },
@@ -69,6 +71,74 @@ let columns = [
   }
 ];
 
+let rows = [
+  {
+    key: 'locationid',
+    locationid: '12345',
+    region:'EMEA',
+    location: '5001 A',
+    floor: '6th floor',
+    building: 'Denver office A',
+    location_type: 'Conference Room (Test)',
+    capacity: '1-44',
+    like: ''
+  },
+  {
+    key: 'locationid7',
+    locationid: '12345666',
+    region:'EMEA',
+    location: '5002 A',
+    floor: '1th floor',
+    building: 'Denver office A',
+    location_type: 'Small Room (Test)',
+    capacity: '1-4',
+    like: ''
+  },{
+    key: 'locationid8',
+    locationid: '1234577',
+    region:'EMEA',
+    location: '5003 A',
+    floor: '4th floor',
+    building: 'Denver office A',
+    location_type: 'Meeting Room (Test)',
+    capacity: '1-23',
+    like: ''
+  },
+  {
+    key: 'locationid1',
+    locationid: '123453',
+    region:'JAPA',
+    location: '5003 B',
+    floor: '6th floor',
+    building: 'Denver office B',
+    location_type: 'Conference Room (Test)',
+    capacity: '1-44',
+    like: ''
+  },
+  {
+    key: 'locationid2',
+    locationid: '123454',
+    region:'US',
+    location: '5003 C',
+    floor: '6th floor',
+    building: 'Denver office C',
+    location_type: 'Conference Room (Test)',
+    capacity: '1-44',
+    like: ''
+  },
+  {
+    key: 'locationid3',
+    locationid: '123455',
+    region:'LAC',
+    location: '5003 D',
+    floor: '6th floor',
+    building: 'Denver office D',
+    location_type: 'Conference Room (Test)',
+    capacity: '1-44',
+    like: ''
+  }
+]
+
 @connect(
   state => ({ meetings: state.meetings }),
   { ...MeetingActions },
@@ -85,12 +155,11 @@ class Home extends Component {
         setSelectedLocations(this.getSelectionDetails(), this.getSelectionCount());
       }
     });
-    const {setSelection, meetings, setData} = this.props;
+    const {setSelection} = this.props;
     setSelection(this.selection);
-    setData({region:'',building:'',floor:''})
-    var self = this;
+
     this.state = {
-      items: [],
+      items: rows,
       isLoading: false
     };
   }
@@ -114,9 +183,7 @@ class Home extends Component {
   }
 
   render() {
-    var { items } = this.state;
-    const { meetings } = this.props;
-    items = meetings.locations
+    const { items } = this.state;
     return (
        
         <div className="ms-Grid" dir="ltr">

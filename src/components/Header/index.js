@@ -27,7 +27,6 @@ class Header extends Component {
   };
 
   render() {
-    const { meetings } = this.props;
     return (
         <div className="ms-Grid-row header-section">
           <div className="ms-Grid-col background-white">

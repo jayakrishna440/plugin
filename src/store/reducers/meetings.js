@@ -1,12 +1,29 @@
-import { SET_START_TIME, SET_END_TIME,SET_MEETING_DATE,SET_MEETING_TYPE,SET_SELECTED_LOCATIONS,SET_SELECTION } from '../actions/meetings';
+import { SET_START_TIME, SET_END_TIME,SET_MEETING_DATE,SET_MEETING_TYPE,SET_SELECTED_LOCATIONS,SET_SELECTION,SET_DATA } from '../actions/meetings';
 
-export default function (state = {selection:{},selected_locations:[],locations_count:0,meetingType:'',startTime:'',endTime:'',meetingDate:new Date().toString()}, action) {
+
+var defaults = {
+  selection:{},
+  locations:[],
+  selected_locations:[],
+  locations_count:0,
+  meetingType:'',
+  startTime:'',
+  endTime:'',
+  meetingDate:new Date().toString()
+}
+
+export default function (state = defaults, action) {
   switch (action.type) {
     case SET_START_TIME:
     return {
       ...state,
       startTime: action.time
     }
+    case SET_DATA:
+      return {
+        ...state,
+        locations: action.locations
+    } 
     case SET_END_TIME:
       return {
         ...state,

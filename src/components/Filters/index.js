@@ -2,180 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as MeetingActions from '../../store/actions/meetings';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { Modal } from 'office-ui-fabric-react/lib/Modal';
 import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
-import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import {
-  DetailsList,
-  CheckboxVisibility,
-  Selection
-} from 'office-ui-fabric-react/lib/DetailsList';
-import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
 
-let filtercolumns = [
-  {
-    key: 'location',
-    name: 'Location',
-    fieldName: 'location',
-    minWidth: 140,
-    maxWidth: 140,
-  }
-] 
-
-let filterrows = [
-  {
-    key: 'locationid1',
-    locationid: '677',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid2',
-    locationid: '1234445',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid3',
-    locationid: '12',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid4',
-    locationid: '89',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid5',
-    locationid: '566',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },{
-    key: 'locationid66',
-    locationid: '34',
-    location: '5001 A',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  }
-] 
-
-
-let featurecolumns = [
-  {
-    key: 'location',
-    name: 'Location',
-    fieldName: 'location',
-    minWidth: 140,
-    maxWidth: 140,
-  }
-] 
-
-let featurerows = [
-  {
-    key: 'locationid2',
-    locationid: '1232345',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid3',
-    locationid: '123645',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid4',
-    locationid: '122a345',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid',
-    locationid: '123435',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid5',
-    locationid: '123453',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid6',
-    locationid: '1234525',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  },
-  {
-    key: 'locationid7',
-    locationid: '123452',
-    location: 'Computer Room',
-    floor: '6th floor',
-    building: 'Denver office A',
-    location_type: 'Conference Room (Test)',
-    capacity: '1-44',
-    like: ''
-  }
-] 
-
+var filterClicked = false;
+var region = '';
+var building = '';
+var floor = '';
 @connect(
   state => ({ meetings: state.meetings }),
   { ...MeetingActions },
 )
 
 export class Filters extends Component {
-  filterselection: Selection;
-  featureselection: Selection;
 
   clearAll(e):any {
     const { meetings } = this.props;
@@ -205,37 +43,41 @@ export class Filters extends Component {
 
     this.removeLocation = this.removeLocation.bind(this);
     this.clearAll = this.clearAll.bind(this);
+
     this.state = {
-      showModal: false
+      filterc:false
     };
-
-    this.filterselection = new Selection({
-      onSelectionChanged: () => {
-        console.log('FILTER')
-      }
-    });
-
-    this.featureselection = new Selection({
-      onSelectionChanged: () => {
-        console.log('FEATURE')
-      }
-    });
+    this.filter = this.filter.bind(this);
+    this.applyFilter = this.applyFilter.bind(this);
   };
 
-  _showModal = (): void => {
-    this.setState({ showModal: true });
+  applyFilter() {
+    const {setSelection, meetings, setData} = this.props;
+    setData({region:region,building:building,floor:floor})
+  }
+
+  filter(e):any {
+    filterClicked = !filterClicked;
+    this.setState({filterc:filterClicked})
+  }
+
+  regionSelected = (option): string=> {
+    console.log(option.key)
+    region = option.text;
   };
 
-  _closeModalandUpdate = (): void => {
-    this.setState({ showModal: false });
+  buildingSelected = (option): string=> {
+    console.log(option.text)
+    building = option.text;
   };
 
-  _closeModal = (): void => {
-    this.setState({ showModal: false });
+  floorSelected = (option): string=> {
+    console.log(option.text)
+    floor = option.text;
   };
 
   render() {
-    //const { selectionDetails } = this.state;
+    const { filterc } = this.state;
     const { meetings} = this.props;
     console.log(meetings)
     const self = this
@@ -246,13 +88,60 @@ export class Filters extends Component {
         </div>;
     })
 
+    let region = <div><Dropdown
+                      onChanged={this.regionSelected}
+                      label="Region"
+                      options={[
+                        { key: 'EMEA', text: 'EMEA' },
+                        { key: 'JAPA', text: 'JAPA' },
+                        { key: 'LAC', text: 'LAC' },
+                        { key: 'US', text: 'US' }
+                      ]}
+                    />
+                  </div>
+    let building = <div><Dropdown
+                      onChanged={this.buildingSelected}
+                      label="Building"
+                      options={[
+                        { key: '13', text: 'AEDR-OB1' },
+                        { key: '364', text: 'AEDR-OB2' },
+                        { key: '17', text: 'AESCP-1' },
+                        { key: '18', text: 'AESCP-2' }
+                      ]}
+                    />
+                  </div>
+    let floor = <div>
+                  <Dropdown
+                      onChanged={this.floorSelected}
+                      label="Floor"
+                      options={[
+                        { key: '1', text: '01' },
+                        { key: '2', text: '02' },
+                        { key: '3', text: '03' }
+                      ]}
+                    />
+                  </div>
+
+    let applyBtns = <div><DefaultButton
+                        onClick={self.applyFilter.bind(this)}
+                      primary={true}
+                      text="Apply"
+                    /></div>
+
+    let filterChecks;
+    if (filterc) {
+      filterChecks = <div><div style={{width:'200px',float:'left',marginRight:'10px'}}>{region}</div><div style={{width:'200px',float:'left',marginRight:'10px'}}>{building}</div><div style={{width:'200px',float:'left',marginRight:'10px'}}>{floor}</div><div style={{width:'200px',float:'left',marginRight:'10px',marginTop:'30px'}}>{applyBtns}</div></div>
+    } else {
+      filterChecks = <div></div>
+    }
+
     return (
-      <div className="ms-Grid-row height-100">
+      <div className="ms-Grid-row height-160">
         <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filter-section">
 
           <div className="ms-Grid-row">
             <div className="ms-Grid-col selectedTab top-btns location margin-bottom-20">
-              <DefaultButton iconProps={{ iconName: 'Filter' }} onClick={this._showModal} >
+              <DefaultButton iconProps={{ iconName: 'Filter' }} onClick={self.filter.bind(this)}>
                 Location Filter
               </DefaultButton>
             </div>
@@ -269,91 +158,11 @@ export class Filters extends Component {
             </div>
 
           </div>
+          <div className="ms-Grid-row">
+            {filterChecks}
+          </div>
 
         </div>
-        <Modal
-          isOpen={this.state.showModal}
-          onDismiss={this._closeModal}
-          isBlocking={false}
-          containerClassName="ms-modalExample-container"
-        >
-          <div className="ms-modalExample-body">
-            
-            <div className="ms-Grid-row">
-              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filters-div">
-                <div>
-                  FILTERS
-                  <MarqueeSelection selection={this.featureselection}>
-                    <DetailsList
-                      isHeaderVisible={false}
-                      selectionPreservedOnEmptyClick={true}
-                      checkboxVisibility = {CheckboxVisibility.always}
-                      items={filterrows}
-                      columns={filtercolumns}
-                      selection={this.featureselection}
-                    />
-                  </MarqueeSelection>
-                </div>
-              </div>
-              <div className="ms-Grid-col height-85">
-              <TextField label="Capacity" /></div>
-          
-              <div className="ms-Grid-col height-85">
-                ROOM TYPE
-                <Dropdown
-                  onChanged={this.meetingTypeSelected}
-                  defaultSelectedKey={'A'}
-                  options={[
-                    { key: 'A', text: 'Meeting Room' },
-                    { key: 'B', text: 'Hall' },
-                    { key: 'E', text: 'Conference' }
-                  ]}
-                />
-              </div>
-
-              <div className="ms-Grid-col height-85">
-                FLOOR TYPE
-                <Dropdown
-                  onChanged={this.meetingTypeSelected}
-                  defaultSelectedKey={'A'}
-                  options={[
-                    { key: 'A', text: '3rd Floor ' },
-                    { key: 'B', text: '5th Floor' },
-                    { key: 'D', text: '10th Floor' },
-                    { key: 'E', text: '11th Floor' }
-                  ]}
-                />
-              </div>
-            </div>
-            <hr/>
-            <div className="ms-Grid-row">
-              <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 filters-div">
-                <div>
-                  FEATURES
-                  <MarqueeSelection selection={this.filterselection}>
-                    <DetailsList
-                      isHeaderVisible={false}
-                      selectionPreservedOnEmptyClick={true}
-                      checkboxVisibility = {CheckboxVisibility.always}
-                      items={featurerows}
-                      columns={featurecolumns}
-                      selection={this.filterselection}
-                    />
-                  </MarqueeSelection>
-                </div>
-              </div>
-            </div>
-
-            <div className='modal-footer'>
-              <DefaultButton className="apply-btn" onClick={this._closeModalandUpdate} primary={true}>
-                APPLY
-              </DefaultButton>
-              <DefaultButton className="apply-btn" onClick={this._closeModal} >
-                CLOSE
-              </DefaultButton>
-            </div>
-          </div>
-        </Modal>
       </div>
     );
   }

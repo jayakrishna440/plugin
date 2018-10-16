@@ -118,19 +118,19 @@ attendiesData.setEvents(events);
     
 class ScheduleView extends Component {
     prevClick = (schedulerData)=> {
-        /*schedulerData.prev();
-        schedulerData.setEvents(DemoData.events);
+        schedulerData.prev();
+        schedulerData.setEvents(events);
         this.setState({
             viewModel: schedulerData
-        })*/
+        })
     }
 
     nextClick = (schedulerData)=> {
-        /*schedulerData.next();
-        schedulerData.setEvents(DemoData.events);
+        schedulerData.next();
+        schedulerData.setEvents(events);
         this.setState({
             viewModel: schedulerData
-        })*/
+        })
     }
 
     onViewChange = (schedulerData, view) => {
