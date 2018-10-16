@@ -82,9 +82,9 @@ export class Filters extends Component {
     console.log(meetings)
     const self = this
     var detailsList = meetings.selected_locations.map(function(name){
-      return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)}>
+      return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)} style={{border:'1px solid black', color:'black'}}>
             <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-10 close-icon" aria-hidden="true"></i> 
-            {name.location}-{name.building}-{name.floor}
+            {name.location},{name.building},{name.floor}&nbsp;&nbsp;
         </div>;
     })
 
@@ -115,6 +115,7 @@ export class Filters extends Component {
                       onChanged={this.floorSelected}
                       label="Floor"
                       options={[
+                        { key:'0', text:'All'},
                         { key: '1', text: '01' },
                         { key: '2', text: '02' },
                         { key: '3', text: '03' }
@@ -153,7 +154,7 @@ export class Filters extends Component {
             </div>
             <div className="ms-Grid-cols selectedTab margin-bottom-10 locationBtn background-white">
               <DefaultButton>
-                Location {detailsList}
+                Location &nbsp;&nbsp;{detailsList}&nbsp;&nbsp;&nbsp;
               </DefaultButton>
             </div>
 

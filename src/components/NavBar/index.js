@@ -20,16 +20,16 @@ export class NavBar extends Component {
     }
     return (
         <div className="ms-Grid-row background-blue">
-            <div className={listViewClass}>
+            <div className={listViewClass} style={{padding:'10px'}}>
               <Link to="/" className="link">List View</Link>
             </div>
-            <div className={scheduleViewClass}>
+            <div className={scheduleViewClass} style={{padding:'10px'}}>
               <Link to="/scheduleview" className="link">Schedule View</Link>
             </div>
-            <div className="ms-Grid-col ms-sm5 ms-md5 ms-lg5 padding-20 color-white">
+            <div className="ms-Grid-col ms-sm5 ms-md5 ms-lg5 padding-20 color-white" style={{padding:'10px'}}>
               Additional Information
             </div>
-            <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 padding-20 color-white text-right">
+            <div className="ms-Grid-col ms-sm3 ms-md3 ms-lg3 padding-20 color-white text-right" style={{padding:'10px'}}>
               Selected Locations ({meetings.locations_count})
             </div>
         </div>

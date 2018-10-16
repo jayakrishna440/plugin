@@ -193,7 +193,7 @@ export class TimePicker extends Component {
           }
         }
       }
-      /*if(type == 'end') {
+      if(type == 'end') {
         if(meetings.startTime !== '') {
           i = 0;
           for(;i< length;i++) {
@@ -217,9 +217,9 @@ export class TimePicker extends Component {
           }
         }
         endTime = time;
-      }*/
+      }
     } else {
-      /*var i = 0 ;
+      var i = 0 ;
       var length = times.length;
       for(;i< length;i++) {
         if(times[i].key == time) {
@@ -253,7 +253,7 @@ export class TimePicker extends Component {
           }
         }
         endTime = time;
-      }*/
+      }
     }
     return (
         <Dropdown
