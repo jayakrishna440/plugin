@@ -23,7 +23,7 @@ initializeIcons();
 
 let columns = [
   {
-    key: 'location',
+    key: 'key',
     name: 'Location',
     fieldName: 'location',
     minWidth: 140,

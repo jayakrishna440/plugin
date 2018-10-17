@@ -240,7 +240,7 @@ export class Filters extends Component {
     console.log(meetings)
     const self = this
     var detailsList = meetings.selected_locations.map(function(name){
-      return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)} style={{color: 'black', border:'1px solid black'}}>
+      return <div key={name.locationid} onClick={self.removeLocation.bind(this,name)}>
             <i className="ms-Icon ms-Icon--ChromeClose padding-right-5 padding-left-10 close-icon" aria-hidden="true"></i> 
             {name.location}-{name.building}-{name.floor}
         </div>;

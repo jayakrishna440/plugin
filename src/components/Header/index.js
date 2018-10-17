@@ -29,10 +29,10 @@ class Header extends Component {
   render() {
     return (
         <div className="ms-Grid-row header-section">
-          <div className="ms-Grid-col background-white">
+          <div className="ms-Grid-col background-white ms-sm-2 margin-bottom-10">
               <DefaultButton iconProps={{ iconName: 'Mail' }}>SEND</DefaultButton>
           </div>
-          <div className="ms-Grid-col">
+          <div className="ms-Grid-col ms-sm-10 margin-bottom-10">
             <Dropdown
               onChanged={this.meetingTypeSelected}
               defaultSelectedKey={'A'}
@@ -44,7 +44,7 @@ class Header extends Component {
               ]}
             />
           </div>
-          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2">
+          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2 margin-bottom-10">
             <DatePicker
               onSelectDate={this.selectMeetingDate}
               formatDate={this._onFormatDate}
@@ -53,10 +53,10 @@ class Header extends Component {
               allowTextInput={false}
             />
           </div>
-          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2">
+          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2 margin-bottom-10">
               <TimePicker type={'start'} />
           </div>
-          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2">
+          <div className="ms-Grid-col ms-sm12 ms-md2 ms-lg2 margin-bottom-10">
               <TimePicker type={'end'} />
           </div>
         </div>

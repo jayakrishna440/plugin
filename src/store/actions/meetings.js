@@ -21,7 +21,7 @@ export function setData(search) {
       return item.building == search.building;
     })
   }
-  if(search.floor != ''){
+  if(search.floor != '' && search.floor != 'all'){
     filterData = filterData.filter(function(item){
       return item.floor == search.floor;
     })
