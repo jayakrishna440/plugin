@@ -1,24 +1,29 @@
 import React, { Component } from 'react';
-import Header from '../../components/Header';
-import NavBar from '../../components/NavBar';
 import Scheduler, {SchedulerData, ViewTypes, DATE_FORMAT} from 'react-big-scheduler'
 import 'react-big-scheduler/lib/css/style.css'
 import moment from 'moment';
 import withDragDropContext from './withDnDContext';
-
+import NavBar from '../../components/NavBar';
 import Filters from '../../components/Filters';
+import { Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
+import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
+
 let attendiesData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Day,false, false, {
     startResizable: false,
     endResizable: false,
     movable: false,
     creatable: false,
     resourceName: "ATTENDIES",
-    minuteStep: 30,
+    minuteStep: 15,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
     eventItemLineHeight: 40,
-    schedulerWidth: '1200'
+    views: [
+        {viewName: 'Day', viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false},
+        {viewName: 'Month', viewType: ViewTypes.Month, showAgenda: false, isEventPerspective: false},
+        {viewName: 'Year', viewType: ViewTypes.Year, showAgenda: false, isEventPerspective: false},
+      ]
 });
 
 let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Day,false, false, {
@@ -27,13 +32,12 @@ let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     movable: false,
     creatable: false,
     resourceName: "EMS HQ",
-    minuteStep: 30,
+    minuteStep: 15,
     displayWeekend: false,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
     eventItemLineHeight: 40,
-    schedulerWidth: '1200',
     views: [
         {viewName: 'Day', viewType: ViewTypes.Day, showAgenda: false, isEventPerspective: false},
         {viewName: 'Month', viewType: ViewTypes.Month, showAgenda: false, isEventPerspective: false},
@@ -148,7 +152,14 @@ class ScheduleView extends Component {
             viewModel: schedulerData
         })*/
     }
-
+    slotItemTemplateResolver = (schedulerData, slot, slotClickedFunc, width, clsName) => {
+        console.log(slot)
+        return (
+            <div>
+               <input type='checkbox'/>{slot.slotName}
+            </div>
+        );
+    }    
     nonAgendaCellHeaderTemplateResolver = (schedulerData, item, formattedDateItems, style) => {
         let datetime = schedulerData.localeMoment(item.time);
         let isCurrentDate = false;
@@ -235,21 +246,38 @@ class ScheduleView extends Component {
     onScrollBottom = (schedulerData, schedulerContent, maxScrollTop) => {
         console.log('onScrollBottom');
     }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+          hideDialog: true
+        };
+      }
+
+
+   _showDialog = (): void => {
+    this.setState({ hideDialog: false });
+  };
+
+   _closeDialog = (): void => {
+    this.setState({ hideDialog: true });
+  };
+
     render() {
         return (
-            <div className="ms-Grid" dir="ltr">
-                {/* HEADER START - SEND BUTTON, DATEPICKER, TIMER PICKER */}
-                <Header></Header>
-                {/* HEADER END - SEND BUTTON, DATEPICKER, TIMER PICKER */}
-                {/* NAVBAR SECTION START */}
-                <NavBar type={'schedule'}></NavBar>
-                {/* NAVBAR SECTION END */}
+            <div>
+                <NavBar type={'fff'}></NavBar>
                 <Filters></Filters>
-                {/* LIST VIEW START */}
-                <div className="ms-Grid-row">
-                    <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">
-                        <Scheduler schedulerData={schedulerData} 
-                        prevClick={this.prevClick}
+                <div className="ms-Grid-row attendies">
+                    <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
+                        <div style={{position:'absolute',top: '24%'}}>
+                            <span>All Attendees</span><br/>
+                            <span onClick={this._showDialog}>
+                                Add New
+                            </span>
+                        </div>
+                        <Scheduler schedulerData={attendiesData} 
+                                prevClick={this.prevClick}
                                 nextClick={this.nextClick}
                                 onSelectDate={this.onSelectDate}
                                 onViewChange={this.onViewChange}
@@ -263,7 +291,52 @@ class ScheduleView extends Component {
                                 nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
                     </div>
                 </div>
-                {/* LIST VIEW END */}
+                <div className="ms-Grid-row rooms">
+                    <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12 list-section">
+                        <div style={{position:'absolute'}}>
+                            <span>Rooms</span><br/>
+                            <span onClick={this._showDialog}>
+                                Add New
+                            </span>
+                        </div>
+                        <Scheduler schedulerData={schedulerData} 
+                                prevClick={this.prevClick}
+                                nextClick={this.nextClick}
+                                onSelectDate={this.onSelectDate}
+                                onViewChange={this.onViewChange}
+                                updateEventStart={this.updateEventStart}
+                                updateEventEnd={this.updateEventEnd}
+                                moveEvent={this.moveEvent}
+                                nScrollLeft={this.onScrollLeft}
+                                onScrollRight={this.onScrollRight}
+                                onScrollTop={this.onScrollTop}
+                                onScrollBottom={this.onScrollBottom}
+                                slotItemTemplateResolver={this.slotItemTemplateResolver}
+                                nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
+                    </div>
+                </div>
+
+                <div>
+                 <Dialog
+                    hidden={this.state.hideDialog}
+                    onDismiss={this._closeDialog}
+                    dialogContentProps={{
+                        type: DialogType.normal,
+                        title: 'Select Rooms',
+                        subText:'Show Here All Rooms List'
+                    }}
+                    modalProps={{
+                        isBlocking: true,
+                        containerClassName: 'ms-dialogMainOverride'
+                    }}
+                    >
+                    <DialogFooter>
+                        <PrimaryButton onClick={this._closeDialog} text="Save" />
+                        <DefaultButton onClick={this._closeDialog} text="Cancel" />
+                    </DialogFooter>
+                    </Dialog>
+                </div>
+                
             </div>
         );    
     }    
