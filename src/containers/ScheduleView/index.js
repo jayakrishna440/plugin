@@ -7,6 +7,9 @@ import NavBar from '../../components/NavBar';
 import Filters from '../../components/Filters';
 import { Dialog, DialogType, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
+import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
+import { connect } from 'react-redux';
+import * as MeetingActions from '../../store/actions/meetings';
 
 let attendiesData = new SchedulerData(new moment().format(DATE_FORMAT), ViewTypes.Day,false, false, {
     startResizable: false,
@@ -14,7 +17,7 @@ let attendiesData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     movable: false,
     creatable: false,
     resourceName: "ATTENDIES",
-    minuteStep: 15,
+    minuteStep: 30,
     checkConflict: true,
     calendarPopoverEnabled: false,
     eventItemHeight: 40,
@@ -32,7 +35,7 @@ let schedulerData = new SchedulerData(new moment().format(DATE_FORMAT), ViewType
     movable: false,
     creatable: false,
     resourceName: "EMS HQ",
-    minuteStep: 15,
+    minuteStep: 30,
     displayWeekend: false,
     checkConflict: true,
     calendarPopoverEnabled: false,
@@ -61,15 +64,15 @@ let attendiesresources = [
 attendiesData.setResources(attendiesresources);
 let resources = [
     {
-       id: 'r1',
+       id: 'EMS Building 1',
        name: 'EMS Building 1'
     },
     {
-       id: 'r2',
+       id: 'EMS Conference Room',
        name: 'EMS Conference Room'
     },
     {
-       id: 'r3',
+       id: 'EMS Building Room 2',
        name: 'EMS Building Room 2'
     }
 ];
@@ -80,7 +83,7 @@ let events = [
      id: 1,
      start: '2018-10-09 09:30:00',
      end: '2018-10-09 10:30:00',
-     resourceId: 'r1',
+     resourceId: 'EMS Building 1',
      title: 'I am finished',
      bgColor: '#D9D9D9'
  }, 
@@ -88,7 +91,7 @@ let events = [
      id: 2,
      start: '2018-10-09 01:00:00',
      end: '2018-10-09 02:30:00',
-     resourceId: 'r2',
+     resourceId: 'EMS Conference Room',
      title: 'New Project',
      resizable: false
  }, 
@@ -96,7 +99,7 @@ let events = [
      id: 3,
      start: '2018-10-09 14:30:00',
      end: '2018-10-09 16:30:00',
-     resourceId: 'r3',
+     resourceId: 'EMS Building Room 2',
      title: 'Erick Conference',
      movable: false
  }, 
@@ -104,7 +107,7 @@ let events = [
      id: 4,
      start: '2018-10-09 16:30:00',
      end: '2018-10-09 23:30:00',
-     resourceId: 'r1',
+     resourceId: 'EMS Building 1',
      title: 'Test Jon Data',
      startResizable: false
  }, 
@@ -112,13 +115,18 @@ let events = [
      id: 5,
      start: '2018-10-09 19:30:00',
      end: '2018-10-09 20:30:00',
-     resourceId: 'r2',
+     resourceId: 'EMS Conference Room',
      title: 'R2 has recurring tasks every week on Tuesday, Friday'
  }
 ];
 schedulerData.setEvents(events);
 
 attendiesData.setEvents(events);
+
+@connect(
+  state => ({ meetings: state.meetings }),
+  { ...MeetingActions },
+)
     
 class ScheduleView extends Component {
     prevClick = (schedulerData)=> {
@@ -146,17 +154,39 @@ class ScheduleView extends Component {
     }
 
     onSelectDate = (schedulerData, date) => {
-        /*schedulerData.setDate(date);
-        schedulerData.setEvents(DemoData.events);
-        this.setState({
-            viewModel: schedulerData
-        })*/
     }
+    _onCheckboxChange(ev: React.FormEvent<HTMLElement>, isChecked: boolean): void {
+        console.log(ev.currentTarget.id)
+        console.log(isChecked)
+        const {meetings} = this.props;
+        console.log(meetings)
+        var start = meetings.startTime.replace('AM','').replace('PM','')
+        var end = meetings.endTime.replace('AM','').replace('PM','')
+        let schedulerData = this.state.viewModel;
+        if(isChecked) {
+            let newFreshId = schedulerData.resources.length + 1;
+            events.push({id: newFreshId, 
+                start:  "2018-10-23 9:30:00",
+                end: '2018-10-23 14:30:00',
+                resourceId: ev.currentTarget.id,
+                title: ev.currentTarget.id,
+                movable: false})
+                schedulerData.setEvents(events);
+                this.setState({
+                    viewModel: schedulerData
+                })
+        }else {
+            events.splice(events.length-1,1);
+            schedulerData.setEvents(events);
+            this.setState({
+                viewModel: schedulerData
+            })
+        }
+      }
     slotItemTemplateResolver = (schedulerData, slot, slotClickedFunc, width, clsName) => {
-        console.log(slot)
         return (
             <div>
-               <input type='checkbox'/>{slot.slotName}
+               <Checkbox label={slot.slotName} id={slot.slotName} onChange={this._onCheckboxChange} />
             </div>
         );
     }    
@@ -249,11 +279,16 @@ class ScheduleView extends Component {
 
     constructor(props) {
         super(props);
+        this._onCheckboxChange = this._onCheckboxChange.bind(this);
         this.state = {
-          hideDialog: true
+          hideDialog: true,
+          viewModel:schedulerData
         };
       }
 
+      conflictOccurred = (schedulerData, action, event) => {
+        alert(`Conflict occurred. {action: ${action}, event: ${event}`);
+    }
 
    _showDialog = (): void => {
     this.setState({ hideDialog: false });
@@ -264,6 +299,8 @@ class ScheduleView extends Component {
   };
 
     render() {
+        const {viewModel} = this.state
+        console.log(viewModel)
         return (
             <div>
                 <NavBar type={'fff'}></NavBar>
@@ -288,6 +325,7 @@ class ScheduleView extends Component {
                                 onScrollRight={this.onScrollRight}
                                 onScrollTop={this.onScrollTop}
                                 onScrollBottom={this.onScrollBottom}
+                                conflictOccurred={this.conflictOccurred}
                                 nonAgendaCellHeaderTemplateResolver = {this.nonAgendaCellHeaderTemplateResolver} />
                     </div>
                 </div>
@@ -299,11 +337,12 @@ class ScheduleView extends Component {
                                 Add New
                             </span>
                         </div>
-                        <Scheduler schedulerData={schedulerData} 
+                        <Scheduler schedulerData={viewModel} 
                                 prevClick={this.prevClick}
                                 nextClick={this.nextClick}
                                 onSelectDate={this.onSelectDate}
                                 onViewChange={this.onViewChange}
+                                conflictOccurred={this.conflictOccurred}
                                 updateEventStart={this.updateEventStart}
                                 updateEventEnd={this.updateEventEnd}
                                 moveEvent={this.moveEvent}
